@@ -116,6 +116,17 @@ def extract_data_from_paragraph(paragraph):
     expenses.extend([None] * (max_length - len(expenses)))
     profits.extend([None] * (max_length - len(profits)))
     
+    # If revenue is missing but units sold is available, calculate it (for example, unit price of 500)
+    for i in range(len(revenues)):
+        if revenues[i] is None and units_sold[i] is not None:
+            revenues[i] = units_sold[i] * 500  # Assuming unit price of 500 (adjust as needed)
+
+    # If expenses are missing, calculate them (you can apply your own logic here, e.g., 20% of revenue)
+    for i in range(len(expenses)):
+        if expenses[i] is None:
+            if revenues[i] is not None:
+                expenses[i] = revenues[i] * 0.2  # Assuming expenses are 20% of revenue (adjust as needed)
+
     # Create DataFrame
     data = pd.DataFrame({
         'date': pd.to_datetime(dates),
